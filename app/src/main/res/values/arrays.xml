@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="test">
+        <item>Router 1</item>
+        <item>Router 2</item>
+        <item>Router 4</item>
+        <item>Router 5</item>
+        <item>Router 6</item>
+        <item>Router 7</item>
+    </string-array>
+</resources>

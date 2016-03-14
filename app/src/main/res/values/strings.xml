@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">Postify</string>
+    <string name="SSID_Caption">SSID:</string>
+    <string name="Config_Caption">Einrichtung</string>
+    <string name="NetKey_Caption">Netzwerkschlüssel</string>
+    <string name="confirm_btn">Bestätigen</string>
 </resources>
