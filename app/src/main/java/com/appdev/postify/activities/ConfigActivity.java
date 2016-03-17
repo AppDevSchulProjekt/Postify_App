@@ -1,4 +1,4 @@
-package com.appdev.postify;
+package com.appdev.postify.activities;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -8,8 +8,12 @@ import android.net.wifi.ScanResult;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.view.MotionEvent;
+import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
+
+import com.appdev.postify.R;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,15 +23,22 @@ import java.util.List;
  * Activity to configure the Router Connection
  */
 public class ConfigActivity extends AppCompatActivity {
+    Spinner spinner = null;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         setContentView(R.layout.activity_config);
-
         setTitle(getResources().getString(R.string.config_caption));
 
-        fillSSIDSpinner();
+        spinner = (Spinner) findViewById(R.id.sp_ssid);
+        spinner.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                fillSSIDSpinner();
+                return false;
+            }
+        });
     }
 
     private void fillSSIDSpinner() {
@@ -35,7 +46,6 @@ public class ConfigActivity extends AppCompatActivity {
                 this, android.R.layout.simple_spinner_item, getRouterSSIDList());
 
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        Spinner spinner = (Spinner) findViewById(R.id.sp_ssid);
         spinner.setAdapter(adapter);
     }
 

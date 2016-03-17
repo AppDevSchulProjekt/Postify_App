@@ -1,7 +1,18 @@
 <resources>
     <string name="app_name">Postify</string>
+
+    <!--Config Activity-->
     <string name="ssid_caption">SSID:</string>
     <string name="config_caption">Einrichtung</string>
     <string name="net_key_caption">Netzwerkschlüssel</string>
     <string name="confirm_btn">Bestätigen</string>
+    <string name="complete_txt">Gesamt</string>
+    <string name="day_txt">Heute</string>
+    <string name="week_txt">Diese Woche</string>
+    <string name="settings_menu_item">Einstellungen</string>
+    <string name="close_menu_item">Beenden</string>
+
+    <!--Main Activity-->
+
+
 </resources>
