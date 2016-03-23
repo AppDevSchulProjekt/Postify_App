@@ -11,6 +11,8 @@
     <string name="week_txt">Diese Woche</string>
     <string name="settings_menu_item">Einstellungen</string>
     <string name="close_menu_item">Beenden</string>
+    <string name="list_item_title">Titel</string>
+    <string name="list_item_description">Beschreibung</string>
 
     <!--Main Activity-->
 

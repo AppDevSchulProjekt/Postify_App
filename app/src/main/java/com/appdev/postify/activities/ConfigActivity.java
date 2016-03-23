@@ -8,6 +8,7 @@ import android.net.wifi.ScanResult;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -24,12 +25,16 @@ import java.util.List;
  */
 public class ConfigActivity extends AppCompatActivity {
     Spinner spinner = null;
+    Toolbar toolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_config);
         setTitle(getResources().getString(R.string.config_caption));
+
+        toolbar = (Toolbar) findViewById(R.id.tool_bar_config);
+        setSupportActionBar(toolbar);
 
         spinner = (Spinner) findViewById(R.id.sp_ssid);
         spinner.setOnTouchListener(new View.OnTouchListener() {
