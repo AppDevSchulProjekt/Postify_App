@@ -1,52 +1,32 @@
 package com.appdev.postify.model;
 
-import java.util.Date;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
 
 /**
  * Created by Soere on 21.03.2016.
  */
 public class Entry {
 
-    //private Date date;
-
-    private int day;
-    private int month;
-    private int year;
-
+    private Calendar time;
     private Float weight;
 
     public Entry(){
     }
 
-    public Entry(int day, int month, int year, Float weight){
-        setDay(day);
-        setMonth(month);
-        setYear(year);
+    public Entry(Calendar time, Float weight){
+        setTime(time);
         setWeight(weight);
     }
 
-    public int getDay() {
-        return day;
+    public Calendar getTime() {
+        return time;
     }
 
-    public void setDay(int day) {
-        this.day = day;
-    }
-
-    public int getMonth() {
-        return month;
-    }
-
-    public void setMonth(int month) {
-        this.month = month;
-    }
-
-    public int getYear() {
-        return year;
-    }
-
-    public void setYear(int year) {
-        this.year = year;
+    public void setTime(Calendar time) {
+        this.time = time;
     }
 
     public Float getWeight() {
@@ -57,7 +37,21 @@ public class Entry {
         this.weight = weight;
     }
 
-    public String getDate(){
-        return day + "." + month + "." + year;
+    public String getFormattedTime(int currentTab){
+        Calendar today = new GregorianCalendar();
+        Calendar yesterday = new GregorianCalendar();
+
+        DateFormat df;
+        if(today.get(Calendar.DAY_OF_MONTH) == time.get(Calendar.DAY_OF_MONTH)){
+            if(currentTab == 1){
+                df = new SimpleDateFormat("hh:mm");
+            }else {
+                df = new SimpleDateFormat("'Heute' - hh:mm"); //DateFormat.getDateTimeInstance();
+            }
+        }else{
+            df = new SimpleDateFormat("dd.MM.yyyy - hh:mm");
+        }
+
+        return df.format(time.getTime());
     }
 }

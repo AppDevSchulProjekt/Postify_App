@@ -11,11 +11,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.appdev.postify.Controller.DBController;
 import com.appdev.postify.R;
 import com.appdev.postify.adapter.RecyclerAdapter;
 import com.appdev.postify.model.Entry;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
@@ -27,8 +29,9 @@ import java.util.List;
  */
 public class EntriesFragment extends Fragment {
     public static final String ARG_PAGE = "ARG_PAGE";
-
     private int mPage;
+
+    DBController dbController;
 
     public static EntriesFragment newInstance(int page) {
         Bundle args = new Bundle();
@@ -42,6 +45,7 @@ public class EntriesFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mPage = getArguments().getInt(ARG_PAGE);
+        dbController = DBController.getInstance();
     }
 
     @Override
@@ -50,7 +54,6 @@ public class EntriesFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_entries, container, false);
 
         //Später hier die Liste entsprechend filtern (case mPage):
-        Log.d("MeineNachricht", String.valueOf(mPage));
 
         setupRecyclerView(view);
         return view;
@@ -59,13 +62,27 @@ public class EntriesFragment extends Fragment {
     private void setupRecyclerView(View view) {
         RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.recycler_view);
 
-        List<Entry> entries = testListeErzeugen();
+        Log.d("MeineNachricht2", "setup: "+String.valueOf(mPage));
 
-        if(mPage == 2){
-            entries.clear();
+        List<Entry> entries;
+
+        switch (mPage){
+            case 1:
+                entries = dbController.readLocalEntries(DBController.TODAY, getContext());
+                break;
+            case 2:
+                entries = dbController.readLocalEntries(DBController.WEEK, getContext());
+                break;
+            case 3:
+                entries = dbController.readLocalEntries(DBController.ALL, getContext());
+                break;
+            default:
+                entries = new ArrayList<Entry>();
+                break;
         }
 
         RecyclerAdapter adapter = new RecyclerAdapter(getContext(), entries);
+        adapter.setCurrentTab(mPage);
 
         if (recyclerView != null) {
             recyclerView.setAdapter(adapter);
@@ -74,13 +91,5 @@ public class EntriesFragment extends Fragment {
             linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
             recyclerView.setLayoutManager(linearLayoutManager);
         }
-    }
-
-    private List<Entry> testListeErzeugen(){
-        List<Entry> entries = new ArrayList<>();
-        entries.add(new Entry(20, 1, 2016, 19f));
-        entries.add(new Entry(07, 1, 2016, 9f));
-
-        return entries;
     }
 }

@@ -10,6 +10,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 
+import com.appdev.postify.Controller.DBController;
 import com.appdev.postify.R;
 import com.appdev.postify.adapter.EntriesPageAdapter;
 
@@ -46,7 +47,8 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(new Intent(this, ConfigActivity.class));
                 return true;
             case R.id.men_close:
-                finish();
+                //Test: zum anlegen neuer Einträge
+                DBController.getInstance().fuelleDatenbankMitTestdaten(this);
                 return true;
             default:
                 return super.onOptionsItemSelected(item);

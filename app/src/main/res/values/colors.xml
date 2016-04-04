@@ -13,4 +13,5 @@
     <color name="colorPrimary">@color/Blue_500</color>
     <color name="colorPrimaryDark">@color/Blue_700</color>
     <color name="colorAccent">#FF4081</color>
+    <color name="transparent">#80FFFFFF</color>
 </resources>

@@ -19,6 +19,7 @@ import java.util.List;
 public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyViewHolder>{
     private List<Entry> entries;
     private LayoutInflater inflater;
+    private int currentTab;
 
     public RecyclerAdapter(Context context, List<Entry> entries){
         this.entries = entries;
@@ -53,8 +54,8 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyView
         public MyViewHolder(View itemView) {
             super(itemView);
             imageView = (ImageView)itemView.findViewById(R.id.img_mail);
-            dateTextView = (TextView) itemView.findViewById(R.id.txt_date);
-            weightTextView = (TextView) itemView.findViewById(R.id.txt_weigth);
+            dateTextView = (TextView) itemView.findViewById(R.id.txt_title);
+            weightTextView = (TextView) itemView.findViewById(R.id.txt_description);
         }
 
         public void setData(Entry currentEntry, int position) {
@@ -62,9 +63,12 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyView
             this.position = position;
 
             imageView.setImageResource(R.drawable.ic_email_outline_black_48dp);
-            dateTextView.setText(currentEntry.getDate());
+            dateTextView.setText(currentEntry.getFormattedTime(currentTab));
             weightTextView.setText(currentEntry.getWeight().toString() + " Gramm");
         }
+    }
+    public void setCurrentTab(int currentTab){
+        this.currentTab = currentTab;
     }
 
 }
