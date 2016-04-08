@@ -22,15 +22,13 @@ import java.util.List;
 public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyViewHolder>{
     private List<Entry> entries;
     private LayoutInflater inflater;
-    private Context context;
-    private int currentTab;
-    private DBController dbController;
+
 
     public RecyclerAdapter(Context context){
         this.entries = new ArrayList<>();
-        this.context = context;
+        //this.context = context;
         this.inflater = LayoutInflater.from(context);
-        dbController = DBController.getInstance();
+        //dbController = DBController.getInstance();
     }
 
     @Override
@@ -70,30 +68,13 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyView
             this.position = position;
 
             imageView.setImageResource(R.drawable.ic_email_outline_black_48dp);
-            dateTextView.setText(currentEntry.getFormattedTime(currentTab));
+            //dateTextView.setText(currentEntry.getFormattedTime(currentTab));
+            dateTextView.setText(currentEntry.getFormattedTime(1));
             weightTextView.setText(currentEntry.getWeight().toString() + " Gramm");
         }
     }
 
-    public void loadNewEntryList(){
-        Log.d("loadEntriesTest", "mPage"+String.valueOf(currentTab));
-        switch (currentTab){
-            case 1:
-                entries = dbController.readLocalEntries(DBController.TODAY, context);
-                break;
-            case 2:
-                entries = dbController.readLocalEntries(DBController.WEEK, context);
-                break;
-            case 3:
-                entries = dbController.readLocalEntries(DBController.ALL, context);
-                break;
-            default:
-                entries.clear();
-                break;
-        }
-    }
-
-    public void setCurrentTab(int currentTab){
-        this.currentTab = currentTab;
+    public void setEntries(ArrayList<Entry> entries){
+        this.entries = entries;
     }
 }

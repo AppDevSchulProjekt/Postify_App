@@ -1,60 +1,30 @@
 package com.appdev.postify.fragments;
 
 import android.os.Bundle;
-import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
 import com.appdev.postify.Controller.DBController;
 import com.appdev.postify.R;
 import com.appdev.postify.adapter.RecyclerAdapter;
-import com.appdev.postify.model.Entry;
-
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.GregorianCalendar;
-import java.util.List;
-
-//Steuerung der drei Ansichten über nur ein Fragment in dem die Liste unterschiedlich gefiltert wird !!!
 
 /**
- * A simple {@link Fragment} subclass.
+ * Created by Soere on 08.04.2016.
  */
-public class EntriesFragment extends Fragment {
-    public static final String ARG_PAGE = "ARG_PAGE";
-    //public static int mPage;
-    public static int currentTab;
-    private SwipeRefreshLayout swipeRefreshLayout;
-
-    private DBController dbController;
+public abstract class EntriesFragment extends Fragment {
     public static RecyclerAdapter adapter;
-
-
-    public static EntriesFragment newInstance(int page) {
-        Bundle args = new Bundle();
-        args.putInt(ARG_PAGE, page);
-        EntriesFragment fragment = new EntriesFragment();
-        fragment.setArguments(args);
-        return fragment;
-    }
+    private SwipeRefreshLayout swipeRefreshLayout;
+    public EntriesFragment(){}
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        currentTab = getArguments().getInt(ARG_PAGE);
-        dbController = DBController.getInstance();
     }
-
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
@@ -76,6 +46,7 @@ public class EntriesFragment extends Fragment {
         });
     }
 
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -86,15 +57,10 @@ public class EntriesFragment extends Fragment {
     }
 
     private void setupRecyclerView(View view) {
-        setupData(view);
-    }
-    private void setupData(View view){
         RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.recycler_view);
-        Log.d("TabUpdate", "Tab:" + String.valueOf(currentTab));
 
         adapter = new RecyclerAdapter(getContext());
-        adapter.setCurrentTab(this.currentTab);
-        adapter.loadNewEntryList();
+        setupEntryList();
 
         if (recyclerView != null) {
             recyclerView.setAdapter(adapter);
@@ -104,4 +70,8 @@ public class EntriesFragment extends Fragment {
             recyclerView.setLayoutManager(linearLayoutManager);
         }
     }
+
+    public abstract void setupEntryList();
+
+
 }

@@ -1,21 +1,17 @@
 package com.appdev.postify.Controller;
 
 import android.app.Activity;
-import android.app.Fragment;
 import android.app.FragmentManager;
-import android.app.FragmentTransaction;
 import android.content.Context;
-import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
+import android.support.v4.app.Fragment;
 import android.util.Log;
-import android.widget.Toast;
 
-import com.appdev.postify.R;
 import com.appdev.postify.activities.MainActivity;
-import com.appdev.postify.adapter.RecyclerAdapter;
 import com.appdev.postify.fragments.EntriesFragment;
+import com.appdev.postify.fragments.TodayEntriesFragment;
 import com.appdev.postify.model.Entry;
 
 import org.json.JSONArray;
@@ -41,7 +37,6 @@ public class DBController {
 
     private HttpURLConnection connection;
     private InputStreamReader streamReader;
-    private Activity intent;
     private Context context;
 
     public static final int TODAY = 1;
@@ -82,9 +77,9 @@ public class DBController {
         database = context.openOrCreateDatabase(LOCAL_DATABASE_NAME, Context.MODE_PRIVATE, null);
         //// TODO: 06.04.2016 delete später löschen
         //database.execSQL("DROP TABLE IF EXISTS " + ENTRY_TABLE_NAME);
-        database.execSQL("CREATE TABLE IF NOT EXISTS " + ENTRY_TABLE_NAME + " (" + TIME_FIELD_NAME +" INTEGER, "+ WEIGHT_FIELD_NAME +" DOUBLE)"); // Aufbau der Tabelle an ServerDB anpassen
+        database.execSQL("CREATE TABLE IF NOT EXISTS " + ENTRY_TABLE_NAME + " (" + TIME_FIELD_NAME + " INTEGER, " + WEIGHT_FIELD_NAME + " DOUBLE)"); // Aufbau der Tabelle an ServerDB anpassen
 
-        Cursor dbEntries = database.rawQuery("SELECT * FROM "+ ENTRY_TABLE_NAME, null);
+        Cursor dbEntries = database.rawQuery("SELECT * FROM "+ ENTRY_TABLE_NAME + " ORDER BY "+TIME_FIELD_NAME+" DESC", null);
         dbEntries.moveToFirst();
         if(dbEntries.getCount() > 0){
             do {
@@ -95,7 +90,7 @@ public class DBController {
                 if(days == -1){
                     // Gesamtansicht
                     Double weight = dbEntries.getDouble(dbEntries.getColumnIndex(WEIGHT_FIELD_NAME));
-                    entries.add(new Entry(time, weight));
+                    entries.add(new Entry(timeAsInt, weight));
                 }else {
                     if (time.compareTo(compareTime) > 0){
                         entries.add(new Entry(time, dbEntries.getDouble(dbEntries.getColumnIndex(WEIGHT_FIELD_NAME))));
@@ -106,19 +101,8 @@ public class DBController {
         return entries;
     }
 
-    public void fuelleDatenbankMitTestdaten(Context context){
-        database = context.openOrCreateDatabase(LOCAL_DATABASE_NAME, Context.MODE_PRIVATE, null);
-        database.execSQL("CREATE TABLE IF NOT EXISTS " + ENTRY_TABLE_NAME + " (" + TIME_FIELD_NAME + " INTEGER, " + WEIGHT_FIELD_NAME + " DOUBLE)");
-
-        Calendar cal = new GregorianCalendar();
-        Entry entry = new Entry(cal, 10.0);
-        Log.d("TimeTest", String.valueOf(entry.getTime()));
-        database.execSQL("INSERT INTO " + ENTRY_TABLE_NAME + " VALUES(" + entry.getTime().getTimeInMillis() / 1000 + ", " + entry.getWeight() + ")");
-    }
-
-
     public void readExternalEntries(Context context) throws Exception{
-
+        //this.fragment = fragment;
         this.context = context;
 
         try {
@@ -165,20 +149,14 @@ public class DBController {
                 for (int i = 0; i < jsonArray.length(); i++) {
                     JSONObject jObj = jsonArray.getJSONObject(i);
                     int timestamp = jObj.getInt(TIME_FIELD_NAME);
-
-                    long timestampInMillis = (long)timestamp;
-                    timestampInMillis *= 1000L;
-
-                    Calendar calendar = new GregorianCalendar();
-                    calendar.setTimeInMillis(timestampInMillis);
-
                     double weight = jObj.getDouble(WEIGHT_FIELD_NAME);
-                    entries.add(new Entry(calendar, weight));
+
+                    entries.add(new Entry(timestamp, weight));
                     this.cancel(true);
                 }
                 refreshLocalDatabase(entries);
-
-                EntriesFragment.adapter.loadNewEntryList();
+                MainActivity.updateAdapter();
+                //Ansicht updaten
 
             } catch (JSONException e) {
                 e.printStackTrace();
@@ -195,16 +173,14 @@ public class DBController {
                 timeInSecondsLocal = localEntriesCursor.getInt(localEntriesCursor.getColumnIndex(TIME_FIELD_NAME));
             }
 
-            Log.d("DBTest", String.valueOf(entriesExtern.size()));
-
             for (Entry entry: entriesExtern) {
-                Log.d("DBTest", "TimeInMillis: " + String.valueOf(entry.getTime().getTimeInMillis()));
-                int timeInSecondsExtern = (int) (entry.getTime().getTimeInMillis()/1000);
-                Log.d("DBTest", String.valueOf(timeInSecondsExtern));
 
+                int timeInSecondsExtern = entry.getSeconds();
+                Log.d("DBTest", "Extern: "+String.valueOf(timeInSecondsExtern));
+                Log.d("DBTest", "Local: "+String.valueOf(timeInSecondsLocal));
                 if(timeInSecondsExtern > timeInSecondsLocal){
                     database.execSQL("INSERT INTO "+ENTRY_TABLE_NAME+" VALUES ("+timeInSecondsExtern+","+entry.getWeight()+")");
-                    Log.d("DBTest", String.valueOf(timeInSecondsExtern));
+                    Log.d("DBTest", "Extern danach: "+String.valueOf(timeInSecondsExtern));
                 }
             }
 

@@ -2,22 +2,30 @@ package com.appdev.postify.activities;
 
 import android.content.Intent;
 import android.support.design.widget.TabLayout;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
 
 import com.appdev.postify.Controller.DBController;
 import com.appdev.postify.R;
-import com.appdev.postify.adapter.EntriesPageAdapter;
-import com.appdev.postify.fragments.EntriesFragment;
+import com.appdev.postify.fragments.CompleteEntriesFragment;
+import com.appdev.postify.fragments.TodayEntriesFragment;
+import com.appdev.postify.fragments.WeekEntriesFragment;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
-    Toolbar toolbar;
+    private Toolbar toolbar;
+    private ViewPager viewPager;
+    private static ViewPagerAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,8 +36,8 @@ public class MainActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);                   // Setting toolbar as the ActionBar with setSupportActionBar() call
 
         // Get the ViewPager and set it's PagerAdapter so that it can display items
-        ViewPager viewPager = (ViewPager) findViewById(R.id.viewpager);
-        viewPager.setAdapter(new EntriesPageAdapter(getSupportFragmentManager(), MainActivity.this));
+        viewPager = (ViewPager) findViewById(R.id.viewpager);
+        setupViewPager();
 
         // Give the TabLayout the ViewPager
         TabLayout tabLayout = (TabLayout) findViewById(R.id.sliding_tabs);
@@ -40,6 +48,57 @@ public class MainActivity extends AppCompatActivity {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    public void setupViewPager() {
+        adapter = new ViewPagerAdapter(getSupportFragmentManager());
+        String tabOneTitle = this.getResources().getString(R.string.day_txt);
+        String tabTwoTitle = this.getResources().getString(R.string.week_txt);
+        String tabThreeTitle = this.getResources().getString(R.string.complete_txt);
+
+        adapter.addFragment(new TodayEntriesFragment(), tabOneTitle);
+        adapter.addFragment(new WeekEntriesFragment(), tabTwoTitle);
+        adapter.addFragment(new CompleteEntriesFragment(), tabThreeTitle);
+        viewPager.setAdapter(adapter);
+    }
+
+    class ViewPagerAdapter extends FragmentPagerAdapter {
+        private final List<Fragment> mFragmentList = new ArrayList<>();
+        private final List<String> mFragmentTitleList = new ArrayList<>();
+
+        public ViewPagerAdapter(FragmentManager manager) {
+            super(manager);
+        }
+
+        @Override
+        public Fragment getItem(int position) {
+            return mFragmentList.get(position);
+        }
+
+        @Override
+        public int getCount() {
+            return mFragmentList.size();
+        }
+
+        @Override
+        public int getItemPosition(Object object) {
+            // Wird ausgeführt beim notify
+            return POSITION_NONE;
+        }
+
+        public void addFragment(Fragment fragment, String title) {
+            mFragmentList.add(fragment);
+            mFragmentTitleList.add(title);
+        }
+
+        @Override
+        public CharSequence getPageTitle(int position) {
+            return mFragmentTitleList.get(position);
+        }
+    }
+
+    public static void updateAdapter(){
+        adapter.notifyDataSetChanged();
     }
 
     @Override
@@ -56,7 +115,6 @@ public class MainActivity extends AppCompatActivity {
                 return true;
             case R.id.men_close:
                 // Just for testing
-
                 return true;
             default:
                 return super.onOptionsItemSelected(item);

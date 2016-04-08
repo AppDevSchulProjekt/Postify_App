@@ -20,9 +20,30 @@ public class Entry {
         setTime(time);
         setWeight(weight);
     }
+    public Entry(int timeinSeconds, Double weight){
+        time = new GregorianCalendar();
+        time.setTimeInMillis(timeinSeconds * 1000L);
+        setWeight(weight);
+    }
+
+    public Entry(long timeinMillis, Double weight){
+        time = new GregorianCalendar();
+        time.setTimeInMillis(timeinMillis);
+        setWeight(weight);
+    }
 
     public Calendar getTime() {
         return time;
+    }
+
+    public int getSeconds(){
+        long timeInMillis = time.getTimeInMillis();
+        int timeInSeconds = (int) (timeInMillis / 1000);
+        return timeInSeconds;
+    }
+
+    public long getMillis(){
+        return time.getTimeInMillis();
     }
 
     public void setTime(Calendar time) {
@@ -38,15 +59,16 @@ public class Entry {
         Calendar yesterday = new GregorianCalendar();
 
         DateFormat df;
-        if(today.get(Calendar.DAY_OF_MONTH) == time.get(Calendar.DAY_OF_MONTH)){
+        /*if(today.get(Calendar.DAY_OF_MONTH) == time.get(Calendar.DAY_OF_MONTH)){
             if(currentTab == 1){
                 df = new SimpleDateFormat("hh:mm");
             }else {
                 df = new SimpleDateFormat("'Heute' - hh:mm"); //DateFormat.getDateTimeInstance();
             }
         }else{
-            df = new SimpleDateFormat("dd.MM.yyyy - hh:mm");
-        }
+        }*/
+        df = DateFormat.getDateTimeInstance();
+        //df = new SimpleDateFormat("dd.MM.yyyy - hh:mm");
 
         return df.format(time.getTime());
     }
