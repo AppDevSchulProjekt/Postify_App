@@ -38,10 +38,4 @@
         android:layout_gravity="right"
         android:onClick="testHTTP"/>
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:textAppearance="?android:attr/textAppearanceSmall"
-        android:text="Small Text"
-        android:id="@+id/textView" />
 </LinearLayout>
