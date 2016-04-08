@@ -6,6 +6,7 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -13,6 +14,7 @@ import android.view.MenuItem;
 import com.appdev.postify.Controller.DBController;
 import com.appdev.postify.R;
 import com.appdev.postify.adapter.EntriesPageAdapter;
+import com.appdev.postify.fragments.EntriesFragment;
 
 public class MainActivity extends AppCompatActivity {
     Toolbar toolbar;
@@ -32,6 +34,12 @@ public class MainActivity extends AppCompatActivity {
         // Give the TabLayout the ViewPager
         TabLayout tabLayout = (TabLayout) findViewById(R.id.sliding_tabs);
         tabLayout.setupWithViewPager(viewPager);
+
+        try {
+            DBController.getInstance().readExternalEntries(this);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -47,8 +55,8 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(new Intent(this, ConfigActivity.class));
                 return true;
             case R.id.men_close:
-                //Test: zum anlegen neuer Einträge
-                DBController.getInstance().fuelleDatenbankMitTestdaten(this);
+                // Just for testing
+
                 return true;
             default:
                 return super.onOptionsItemSelected(item);

@@ -11,12 +11,12 @@ import java.util.GregorianCalendar;
 public class Entry {
 
     private Calendar time;
-    private Float weight;
+    private Double weight;
 
     public Entry(){
     }
 
-    public Entry(Calendar time, Float weight){
+    public Entry(Calendar time, Double weight){
         setTime(time);
         setWeight(weight);
     }
@@ -29,12 +29,8 @@ public class Entry {
         this.time = time;
     }
 
-    public Float getWeight() {
+    public Double getWeight() {
         return weight;
-    }
-
-    public void setWeight(Float weight) {
-        this.weight = weight;
     }
 
     public String getFormattedTime(int currentTab){
@@ -53,5 +49,9 @@ public class Entry {
         }
 
         return df.format(time.getTime());
+    }
+
+    public void setWeight(Double weight) {
+        this.weight = weight;
     }
 }

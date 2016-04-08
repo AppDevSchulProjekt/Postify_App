@@ -14,6 +14,7 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 
+import com.appdev.postify.Controller.DBController;
 import com.appdev.postify.R;
 
 import java.util.ArrayList;

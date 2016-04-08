@@ -1,7 +1,9 @@
 package com.appdev.postify.fragments;
 
 import android.os.Bundle;
+import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -29,9 +31,13 @@ import java.util.List;
  */
 public class EntriesFragment extends Fragment {
     public static final String ARG_PAGE = "ARG_PAGE";
-    private int mPage;
+    //public static int mPage;
+    public static int currentTab;
+    private SwipeRefreshLayout swipeRefreshLayout;
 
-    DBController dbController;
+    private DBController dbController;
+    public static RecyclerAdapter adapter;
+
 
     public static EntriesFragment newInstance(int page) {
         Bundle args = new Bundle();
@@ -44,8 +50,30 @@ public class EntriesFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mPage = getArguments().getInt(ARG_PAGE);
+
+        currentTab = getArguments().getInt(ARG_PAGE);
         dbController = DBController.getInstance();
+    }
+
+    @Override
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        swipeRefreshLayout = (SwipeRefreshLayout) getView().findViewById(R.id.swipeRefreshLayout);
+
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                // Refresh items
+                try {
+                    DBController.getInstance().readExternalEntries(getContext());
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+                swipeRefreshLayout.setRefreshing(false);
+            }
+        });
     }
 
     @Override
@@ -53,36 +81,20 @@ public class EntriesFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_entries, container, false);
 
-        //Später hier die Liste entsprechend filtern (case mPage):
-
         setupRecyclerView(view);
         return view;
     }
 
     private void setupRecyclerView(View view) {
+        setupData(view);
+    }
+    private void setupData(View view){
         RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.recycler_view);
+        Log.d("TabUpdate", "Tab:" + String.valueOf(currentTab));
 
-        Log.d("MeineNachricht2", "setup: "+String.valueOf(mPage));
-
-        List<Entry> entries;
-
-        switch (mPage){
-            case 1:
-                entries = dbController.readLocalEntries(DBController.TODAY, getContext());
-                break;
-            case 2:
-                entries = dbController.readLocalEntries(DBController.WEEK, getContext());
-                break;
-            case 3:
-                entries = dbController.readLocalEntries(DBController.ALL, getContext());
-                break;
-            default:
-                entries = new ArrayList<Entry>();
-                break;
-        }
-
-        RecyclerAdapter adapter = new RecyclerAdapter(getContext(), entries);
-        adapter.setCurrentTab(mPage);
+        adapter = new RecyclerAdapter(getContext());
+        adapter.setCurrentTab(this.currentTab);
+        adapter.loadNewEntryList();
 
         if (recyclerView != null) {
             recyclerView.setAdapter(adapter);
