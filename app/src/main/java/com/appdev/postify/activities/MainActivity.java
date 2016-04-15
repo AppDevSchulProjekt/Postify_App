@@ -13,6 +13,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 
+import com.appdev.postify.BaseApplication;
 import com.appdev.postify.Controller.DBController;
 import com.appdev.postify.R;
 import com.appdev.postify.fragments.CompleteEntriesFragment;
@@ -48,6 +49,8 @@ public class MainActivity extends AppCompatActivity {
         } catch (Exception e) {
             e.printStackTrace();
         }
+
+        BaseApplication.removeAllBadges();
     }
 
     public void setupViewPager() {
