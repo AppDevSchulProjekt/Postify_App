@@ -27,7 +27,7 @@ public class BaseApplication extends Application {
     public void onCreate() {
         super.onCreate();
         // Get a 64-bit number as a hex string (randomly generated when the user first sets up)
-        deviceID = "ID" + Settings.Secure.getString(getApplicationContext().getContentResolver(), Secure.ANDROID_ID);
+        deviceID = Settings.Secure.getString(getApplicationContext().getContentResolver(), Secure.ANDROID_ID);
         // AFPushEnvironment set Live Mode
         AFPushEnvironment environment = AFPushEnvironment.LIVE;
         // Create AppFarms Push Config
