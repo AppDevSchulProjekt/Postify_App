@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/Postify_App.iml" filepath="$PROJECT_DIR$/Postify_App.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/Postify_App.iml" filepath="$PROJECT_DIR$/.idea/Postify_App.iml" />
       <module fileurl="file://$PROJECT_DIR$/af-push-manager-release/af-push-manager-release.iml" filepath="$PROJECT_DIR$/af-push-manager-release/af-push-manager-release.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
     </modules>

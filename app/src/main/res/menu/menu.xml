@@ -4,6 +4,6 @@
         android:id="@+id/men_settings"
         android:title="@string/settings_menu_item" />
     <item
-        android:id="@+id/men_close"
-        android:title="@string/close_menu_item"/>
+        android:id="@+id/men_stats"
+        android:title="@string/stats_menu_item"/>
 </menu>

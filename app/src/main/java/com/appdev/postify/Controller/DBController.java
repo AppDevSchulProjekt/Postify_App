@@ -6,8 +6,11 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
+import android.provider.Settings;
 import android.support.v4.app.Fragment;
+
 import android.util.Log;
+import android.widget.Toast;
 
 import com.appdev.postify.activities.MainActivity;
 import com.appdev.postify.fragments.EntriesFragment;
@@ -55,9 +58,10 @@ public class DBController {
         return instance;
     }
 
-    private DBController() {
-
-    }
+    /**
+     * Private Constructor for Singleton implementation
+     */
+    private DBController() {}
 
     public ArrayList<Entry> readLocalEntries(int days, Context context){
         ArrayList<Entry> entries = new ArrayList<>();
@@ -73,9 +77,10 @@ public class DBController {
         compareTime.set(Calendar.MINUTE, 0);
         compareTime.set(Calendar.SECOND, 0);
         compareTime.set(Calendar.MILLISECOND, 0);
+        Log.d("DebuggDate", String.valueOf(compareTime.getTimeInMillis()));
 
         database = context.openOrCreateDatabase(LOCAL_DATABASE_NAME, Context.MODE_PRIVATE, null);
-        //// TODO: 06.04.2016 delete später löschen
+        // TODO: 06.04.2016 delete später löschen
         //database.execSQL("DROP TABLE IF EXISTS " + ENTRY_TABLE_NAME);
         database.execSQL("CREATE TABLE IF NOT EXISTS " + ENTRY_TABLE_NAME + " (" + TIME_FIELD_NAME + " INTEGER, " + WEIGHT_FIELD_NAME + " DOUBLE)"); // Aufbau der Tabelle an ServerDB anpassen
 
@@ -101,19 +106,26 @@ public class DBController {
         return entries;
     }
 
-    public void readExternalEntries(Context context) throws Exception{
-        //this.fragment = fragment;
+    public void readExternalEntries(Context context) {
         this.context = context;
 
         try {
-            URL url = new URL("http://postifier.esy.es/get.php?id=test");
+            //// TODO: 16.04.2016 Build URL with DeviceID
+            String android_id = Settings.Secure.getString(context.getContentResolver(),
+                    Settings.Secure.ANDROID_ID);
+            //Toast.makeText(context, android_id, Toast.LENGTH_LONG).show();
+            URL url = new URL("http://postifier.esy.es/get.php?id=" + android_id);
             new AsyncClass().execute(url);
 
         }catch (Exception e){
-            Log.d("Http Test", e.getMessage());
+            //keine Verbindung zur DB aufgebaut
         }finally {
             if(streamReader != null){
-                streamReader.close();
+                try {
+                    streamReader.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
         }
     }
@@ -174,16 +186,11 @@ public class DBController {
             }
 
             for (Entry entry: entriesExtern) {
-
                 int timeInSecondsExtern = entry.getSeconds();
-                Log.d("DBTest", "Extern: "+String.valueOf(timeInSecondsExtern));
-                Log.d("DBTest", "Local: "+String.valueOf(timeInSecondsLocal));
                 if(timeInSecondsExtern > timeInSecondsLocal){
                     database.execSQL("INSERT INTO "+ENTRY_TABLE_NAME+" VALUES ("+timeInSecondsExtern+","+entry.getWeight()+")");
-                    Log.d("DBTest", "Extern danach: "+String.valueOf(timeInSecondsExtern));
                 }
             }
-
         }
     }
 }

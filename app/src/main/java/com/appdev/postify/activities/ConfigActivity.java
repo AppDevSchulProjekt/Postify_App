@@ -1,14 +1,18 @@
 package com.appdev.postify.activities;
 
+import android.app.AlertDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.net.wifi.ScanResult;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -17,10 +21,13 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import com.appdev.postify.BaseApplication;
 import com.appdev.postify.Controller.DBController;
 import com.appdev.postify.R;
+import com.appdev.postify.datastorage.SDCardManager;
 
 import java.io.DataOutputStream;
+import java.io.File;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.Socket;
@@ -55,10 +62,13 @@ public class ConfigActivity extends AppCompatActivity {
 
         // Confirm Button Settings
         confirmButton = (Button) findViewById(R.id.confirm_button);
-        confirmButton.setOnClickListener(confirmButtonKlickListener);
+        confirmButton.setOnClickListener(confirmButtonClickListener);
 
         // Network Key Settings
         networkKeyEditText = (EditText) findViewById(R.id.network_key_edit_text);
+        
+        // TODO: 25.04.2016 Solange keine SD Karte eingelegt ist soll eine AlertDialog angezeigt werden.
+
     }
 
     View.OnTouchListener ssidOnTouchListener = new View.OnTouchListener() {
@@ -69,17 +79,37 @@ public class ConfigActivity extends AppCompatActivity {
         }
     };
 
-    View.OnClickListener confirmButtonKlickListener = new View.OnClickListener() {
+    View.OnClickListener confirmButtonClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            if (networkKeyEditText.getText().length() > 0 && ssidSpinner.getSelectedItem().toString().length() > 0) {
-                Toast.makeText(getApplicationContext(), "Button Pressed", Toast.LENGTH_LONG).show();
-                // create a connection to ESP
-                // Send Arduino Data
-            } else {
+            //if (networkKeyEditText.getText().length() > 0 && ssidSpinner.getSelectedItem().toString().length() > 0) {
+                //ssid and key are filled:
+                // TODO: 25.04.2016 Textdateien auf SSD Karte speichern
+                //buildSDConnection();
+                /*
+                AlertDialog.Builder builder = new AlertDialog.Builder(v.getContext()); // Context entscheidend
+                builder.setTitle("SD Karte erforderlich");
+                builder.setMessage("Es konnte keine SD Karte gefunden werden. Bitte prüfen Sie ob diese korrekt eingelegt ist und widerholen Sie den Vorgang");
+                builder.setPositiveButton("Wiederholen", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        // User clicked OK button
+                        dialog.cancel();
+                    }
+                });
+                AlertDialog aDialog = builder.create();
+                aDialog.show();
+                */
+                if(SDCardManager.trySaveFile("Testdatei2.txt", "Testinhalt")){
+                    Toast.makeText(ConfigActivity.this, "Datei erzeugt", Toast.LENGTH_LONG).show();
+                }else {
+                    Toast.makeText(ConfigActivity.this, "Datei nicht erzeugt", Toast.LENGTH_LONG).show();
+                }
+
+
+            //} else {
                 // Bitte fülle die Felder aus
-                Toast.makeText(getApplicationContext(), "Bitte felder ausfüllen", Toast.LENGTH_LONG).show();
-            }
+            //    Toast.makeText(getApplicationContext(), "Bitte felder ausfüllen", Toast.LENGTH_LONG).show();
+            //}
         }
     };
 

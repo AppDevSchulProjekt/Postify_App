@@ -27,6 +27,7 @@ public class MainActivity extends AppCompatActivity {
     private Toolbar toolbar;
     private ViewPager viewPager;
     private static ViewPagerAdapter adapter;
+    DBController dbController;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,13 +45,16 @@ public class MainActivity extends AppCompatActivity {
         TabLayout tabLayout = (TabLayout) findViewById(R.id.sliding_tabs);
         tabLayout.setupWithViewPager(viewPager);
 
-        try {
-            DBController.getInstance().readExternalEntries(this);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        dbController = DBController.getInstance();
+        dbController.readExternalEntries(this);
 
         BaseApplication.removeAllBadges();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        dbController.readExternalEntries(this);
     }
 
     public void setupViewPager() {
@@ -116,9 +120,9 @@ public class MainActivity extends AppCompatActivity {
             case R.id.men_settings:
                 startActivity(new Intent(this, ConfigActivity.class));
                 return true;
-            case R.id.men_close:
-                // Just for testing
-                return true;
+            //// TODO: 25.04.2016 statistic menu
+            case R.id.men_stats:
+                startActivity(new Intent(this, StatisticsActivity.class));
             default:
                 return super.onOptionsItemSelected(item);
         }

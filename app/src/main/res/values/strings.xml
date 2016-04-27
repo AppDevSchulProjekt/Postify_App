@@ -6,16 +6,18 @@
     <string name="config_caption">Einrichtung</string>
     <string name="net_key_caption">Netzwerkschlüssel</string>
     <string name="confirm_btn">Bestätigen</string>
-    <string name="complete_txt">Gesamt</string>
-    <string name="day_txt">Heute</string>
-    <string name="week_txt">Diese Woche</string>
-    <string name="settings_menu_item">Einstellungen</string>
-    <string name="close_menu_item">Beenden</string>
-    <string name="list_item_title">Titel</string>
-    <string name="list_item_description">Beschreibung</string>
-    <string name="fragment_entries_name">entries_fragment</string>
 
     <!--Main Activity-->
+    <string name="complete_txt">Gesamt</string>
+    <string name="day_txt">Heute</string>
+    <string name="week_txt">7 Tage</string>
 
+    <!--OptionMenu-->
+    <string name="settings_menu_item">Einstellungen</string>
+    <string name="stats_menu_item">Statistiken</string>
+
+    <!--Card-->
+    <string name="list_item_title">Titel</string>
+    <string name="list_item_description">Beschreibung</string>
 
 </resources>
