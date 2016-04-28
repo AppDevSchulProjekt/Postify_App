@@ -4,21 +4,30 @@
     <!--Config Activity-->
     <string name="config_caption">Einrichtung</string>
     <string name="ssid_caption">Netzwerkname (SSID)</string>
+    <string name="title_available_networks">Verfügbare Netze</string>
     <string name="net_key_caption">Kennwort</string>
     <string name="show_net_key_caption">Kennwort anzeigen</string>
     <string name="confirm_btn">Bestätigen</string>
+    <string name="msg_fill_fields">Bitte zuerst die Felder ausfüllen</string>
+    <string name="msg_config_saved">Einrichungsdaten wurden gespeichert</string>
 
     <!--Main Activity-->
     <string name="complete_txt">Gesamt</string>
     <string name="day_txt">Heute</string>
     <string name="week_txt">7 Tage</string>
+    <string name="msg_change_to_config">Postify ist noch nicht eingerichtet. Zur Einrichtung wechseln?</string>
+    <string name="msg_confirm">Ja</string>
+    <string name="msg_abort">Nein</string>
 
     <!--OptionMenu-->
-    <string name="settings_menu_item">Einstellungen</string>
+    <string name="settings_menu_item">Einrichtung</string>
     <string name="stats_menu_item">Statistiken</string>
 
     <!--Card-->
     <string name="list_item_title">Titel</string>
     <string name="list_item_description">Beschreibung</string>
+    <string name="weight_gramm">Gramm</string>
+    <string name="cap_today">Heute</string>
+    <string name="cap_yesterday">Gestern</string>
 
 </resources>

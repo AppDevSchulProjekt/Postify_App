@@ -3,6 +3,10 @@
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <include
+        android:id="@+id/tool_bar_config"
+        layout="@layout/tool_bar"/>
+
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -30,4 +34,11 @@
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:text="Durchsnitt Uhrzeit: 10:24 Uhr"
         android:id="@+id/textView4" />
+
+    <TextView
+        android:id="@+id/DeviceId"
+        android:text="Platzhalter"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
 </LinearLayout>

@@ -11,11 +11,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by Soere on 27.04.2016.
+ * Created by Soeren on 27.04.2016.
  */
 public class WifiManagement {
     private static WifiManagement instance;
 
+    /**
+     * Private Constructor for Singleton implementation
+     */
     private WifiManagement(){}
 
     public static WifiManagement getInstance(){

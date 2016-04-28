@@ -3,17 +3,16 @@ package com.appdev.postify.activities;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-
 
 import com.appdev.postify.BaseApplication;
 import com.appdev.postify.Controller.DBController;
@@ -37,9 +36,6 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        //
-        checkConfigAvailable();
-
         toolbar = (Toolbar) findViewById(R.id.tool_bar); // Attaching the layout to the toolbar object
         setSupportActionBar(toolbar);                   // Setting toolbar as the ActionBar with setSupportActionBar() call
 
@@ -52,7 +48,7 @@ public class MainActivity extends AppCompatActivity {
         tabLayout.setupWithViewPager(viewPager);
 
         dbController = DBController.getInstance();
-        dbController.readExternalEntries(this);
+        dbController.readExternalEntries(this, null);
 
         BaseApplication.removeAllBadges();
     }
@@ -61,7 +57,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         checkConfigAvailable();
-        dbController.readExternalEntries(this);
+        dbController.readExternalEntries(this, null);
     }
 
     public void setupViewPager() {
@@ -135,18 +131,18 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void checkConfigAvailable(){
-        String savedSSID = PreferencesManagement.getStringPreferences("SSID");
+        String savedSSID = PreferencesManagement.getStringPreferences(PreferencesManagement.SSID_Key);
         if(savedSSID == null || savedSSID.isEmpty()){
-            AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this); // Context entscheidend
-            builder.setTitle("Einrichtung");
-            builder.setMessage("Postify ist noch nicht eingerichtet. Zur Einrichtung wecheseln?");
-            builder.setPositiveButton("Ja", new DialogInterface.OnClickListener() {
+            AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+            builder.setTitle(getResources().getString(R.string.config_caption));
+            builder.setMessage(getResources().getString(R.string.msg_change_to_config));
+            builder.setPositiveButton(getResources().getString(R.string.msg_confirm), new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int id) {
                     startActivity(new Intent(MainActivity.this, ConfigActivity.class));
                 }
             });
-            builder.setNegativeButton("Nein", new DialogInterface.OnClickListener(){
+            builder.setNegativeButton(getResources().getString(R.string.msg_abort), new DialogInterface.OnClickListener(){
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
                     dialog.cancel();

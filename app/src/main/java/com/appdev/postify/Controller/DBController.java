@@ -1,20 +1,14 @@
 package com.appdev.postify.Controller;
 
-import android.app.Activity;
-import android.app.FragmentManager;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
 import android.provider.Settings;
-import android.support.v4.app.Fragment;
-
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.appdev.postify.activities.MainActivity;
-import com.appdev.postify.fragments.EntriesFragment;
-import com.appdev.postify.fragments.TodayEntriesFragment;
 import com.appdev.postify.model.Entry;
 
 import org.json.JSONArray;
@@ -32,7 +26,7 @@ import java.util.List;
 
 
 /**
- * Created by Soere on 30.03.2016.
+ * Created by Soeren on 30.03.2016.
  */
 public class DBController {
     private static DBController instance;
@@ -41,6 +35,7 @@ public class DBController {
     private HttpURLConnection connection;
     private InputStreamReader streamReader;
     private Context context;
+    private SwipeRefreshLayout swipeRefreshLayout;
 
     public static final int TODAY = 1;
     public static final int WEEK = 7;
@@ -106,13 +101,14 @@ public class DBController {
         return entries;
     }
 
-    public void readExternalEntries(Context context) {
+    public void readExternalEntries(Context context, SwipeRefreshLayout swipeRefreshLayout ) {
         this.context = context;
+        this.swipeRefreshLayout = swipeRefreshLayout;
 
         try {
             String android_id = Settings.Secure.getString(context.getContentResolver(),
                     Settings.Secure.ANDROID_ID);
-            //Toast.makeText(context, android_id, Toast.LENGTH_LONG).show();
+
             URL url = new URL("http://postifier.esy.es/get.php?id=" + android_id);
             new AsyncClass().execute(url);
 
@@ -167,7 +163,10 @@ public class DBController {
                 }
                 refreshLocalDatabase(entries);
                 MainActivity.updateAdapter();
-                //Ansicht updaten
+
+                if (swipeRefreshLayout != null){
+                    swipeRefreshLayout.setRefreshing(false);
+                }
 
             } catch (JSONException e) {
                 e.printStackTrace();
@@ -175,7 +174,6 @@ public class DBController {
         }
 
         private void refreshLocalDatabase(List<Entry> entriesExtern){
-            //Eventuell verbessern durch vorheriger Prüfung der Anzahl der vorhandenen Einträge
             database = context.openOrCreateDatabase(LOCAL_DATABASE_NAME, Context.MODE_PRIVATE, null);
             Cursor localEntriesCursor = database.rawQuery("SELECT * FROM " + ENTRY_TABLE_NAME + " ORDER BY " + TIME_FIELD_NAME + " DESC LIMIT 1", null);
             int timeInSecondsLocal = 0;

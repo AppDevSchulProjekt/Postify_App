@@ -11,7 +11,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 
 /**
- * Created by Soere on 26.04.2016.
+ * Created by Soeren on 26.04.2016.
  */
 public class SDCardManager {
     public static boolean trySaveFile(String filename, String content){

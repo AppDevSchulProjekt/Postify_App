@@ -14,7 +14,8 @@ import com.appdev.postify.R;
 import com.appdev.postify.adapter.RecyclerAdapter;
 
 /**
- * Created by Soere on 08.04.2016.
+ * Created by Soeren on 08.04.2016.
+ * Base Class of the Fragments for the specific Views of the Entries
  */
 public abstract class EntriesFragment extends Fragment {
     public static RecyclerAdapter adapter;
@@ -25,6 +26,7 @@ public abstract class EntriesFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
     }
+
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
@@ -36,16 +38,13 @@ public abstract class EntriesFragment extends Fragment {
             public void onRefresh() {
                 // Refresh items
                 try {
-                    DBController.getInstance().readExternalEntries(getContext());
+                    DBController.getInstance().readExternalEntries(getContext(), swipeRefreshLayout);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-
-                swipeRefreshLayout.setRefreshing(false);
             }
         });
     }
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -56,6 +55,10 @@ public abstract class EntriesFragment extends Fragment {
         return view;
     }
 
+    /**
+     * Sets the adapter with the Entries to show and the Layout for the RecyclerView
+     * @param view
+     */
     private void setupRecyclerView(View view) {
         RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.recycler_view);
 
@@ -71,7 +74,8 @@ public abstract class EntriesFragment extends Fragment {
         }
     }
 
+    /**
+     * This Method is used to load the Items(Entries) in the RecyclerView
+     */
     public abstract void setupEntryList();
-
-
 }

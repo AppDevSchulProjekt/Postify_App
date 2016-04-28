@@ -1,6 +1,7 @@
 package com.appdev.postify.fragments;
 
 import android.support.v4.app.Fragment;
+
 import com.appdev.postify.Controller.DBController;
 
 /**
@@ -10,6 +11,8 @@ public class TodayEntriesFragment extends EntriesFragment {
 
     @Override
     public void setupEntryList() {
+        adapter.setTabPosition(1);
         adapter.setEntries(DBController.getInstance().readLocalEntries(DBController.TODAY, getContext()));
     }
+
 }

@@ -1,22 +1,13 @@
 package com.appdev.postify.activities;
 
 import android.app.AlertDialog;
-import android.content.BroadcastReceiver;
-import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
-import android.content.IntentFilter;
-import android.net.wifi.ScanResult;
-import android.net.wifi.WifiManager;
 import android.os.Bundle;
-import android.os.Environment;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.InputType;
 import android.text.method.HideReturnsTransformationMethod;
 import android.text.method.PasswordTransformationMethod;
-import android.util.Log;
-import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -24,27 +15,17 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.EditText;
-import android.widget.Spinner;
-import android.widget.TextView;
 import android.widget.Toast;
 
-import com.appdev.postify.BaseApplication;
-import com.appdev.postify.Controller.DBController;
 import com.appdev.postify.Manager.WifiManagement;
 import com.appdev.postify.R;
 import com.appdev.postify.datastorage.PreferencesManagement;
-import com.appdev.postify.datastorage.SDCardManager;
-
-import org.w3c.dom.Text;
 
 import java.io.DataOutputStream;
-import java.io.File;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.net.UnknownHostException;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by Soeren on 14.03.2016.
@@ -128,12 +109,12 @@ public class ConfigActivity extends AppCompatActivity {
 
                 PreferencesManagement.saveStringPreferences(PreferencesManagement.SSID_Key, ssidEditText.getText().toString());
                 PreferencesManagement.saveStringPreferences(PreferencesManagement.NetworkKey_Key, networkKeyEditText.getText().toString());
-                Toast.makeText(ConfigActivity.this, "Einrichungsdaten wurden gespeichert", Toast.LENGTH_SHORT).show();
+                Toast.makeText(ConfigActivity.this, getResources().getString(R.string.msg_config_saved), Toast.LENGTH_SHORT).show();
                 ConfigActivity.this.finish();
 
             } else {
-                // Bitte fülle die Felder aus
-                Toast.makeText(getApplicationContext(), "Bitte felder ausfüllen", Toast.LENGTH_LONG).show();
+                // The Fields have to be filled
+                Toast.makeText(getApplicationContext(), getResources().getString(R.string.msg_fill_fields), Toast.LENGTH_LONG).show();
             }
         }
     };
@@ -141,7 +122,7 @@ public class ConfigActivity extends AppCompatActivity {
     private void showSSIDSelection() {
 
         AlertDialog.Builder builder = new AlertDialog.Builder(ConfigActivity.this); // Context entscheidend
-        builder.setTitle("Verfügbare Netze");
+        builder.setTitle(getResources().getString(R.string.title_available_networks));
 
         final ArrayAdapter<String> adapter = new ArrayAdapter<String>(
                 this, android.R.layout.select_dialog_item, WifiManagement.getInstance().getRouterSSIDList(this));
