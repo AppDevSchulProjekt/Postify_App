@@ -2,9 +2,10 @@
     <string name="app_name">Postify</string>
 
     <!--Config Activity-->
-    <string name="ssid_caption">SSID:</string>
     <string name="config_caption">Einrichtung</string>
-    <string name="net_key_caption">Netzwerkschlüssel</string>
+    <string name="ssid_caption">Netzwerkname (SSID)</string>
+    <string name="net_key_caption">Kennwort</string>
+    <string name="show_net_key_caption">Kennwort anzeigen</string>
     <string name="confirm_btn">Bestätigen</string>
 
     <!--Main Activity-->

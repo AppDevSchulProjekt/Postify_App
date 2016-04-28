@@ -12,7 +12,7 @@
         android:layout_height="wrap_content"
         android:text="@string/ssid_caption"/>
 
-    <Spinner
+    <EditText
         android:id="@+id/sp_ssid"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -27,8 +27,13 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="20dp"
-        android:inputType="textPassword"
         android:id="@+id/network_key_edit_text" />
+
+    <CheckBox
+        android:id="@+id/cb_show_net_key"
+        android:text="@string/show_net_key_caption"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
 
     <Button
         android:id="@+id/confirm_button"

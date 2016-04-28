@@ -1,5 +1,7 @@
 package com.appdev.postify.activities;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
@@ -16,6 +18,7 @@ import android.view.MenuItem;
 import com.appdev.postify.BaseApplication;
 import com.appdev.postify.Controller.DBController;
 import com.appdev.postify.R;
+import com.appdev.postify.datastorage.PreferencesManagement;
 import com.appdev.postify.fragments.CompleteEntriesFragment;
 import com.appdev.postify.fragments.TodayEntriesFragment;
 import com.appdev.postify.fragments.WeekEntriesFragment;
@@ -33,6 +36,9 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        //
+        checkConfigAvailable();
 
         toolbar = (Toolbar) findViewById(R.id.tool_bar); // Attaching the layout to the toolbar object
         setSupportActionBar(toolbar);                   // Setting toolbar as the ActionBar with setSupportActionBar() call
@@ -54,6 +60,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        checkConfigAvailable();
         dbController.readExternalEntries(this);
     }
 
@@ -120,11 +127,33 @@ public class MainActivity extends AppCompatActivity {
             case R.id.men_settings:
                 startActivity(new Intent(this, ConfigActivity.class));
                 return true;
-            //// TODO: 25.04.2016 statistic menu
             case R.id.men_stats:
                 startActivity(new Intent(this, StatisticsActivity.class));
             default:
                 return super.onOptionsItemSelected(item);
+        }
+    }
+
+    private void checkConfigAvailable(){
+        String savedSSID = PreferencesManagement.getStringPreferences("SSID");
+        if(savedSSID == null || savedSSID.isEmpty()){
+            AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this); // Context entscheidend
+            builder.setTitle("Einrichtung");
+            builder.setMessage("Postify ist noch nicht eingerichtet. Zur Einrichtung wecheseln?");
+            builder.setPositiveButton("Ja", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int id) {
+                    startActivity(new Intent(MainActivity.this, ConfigActivity.class));
+                }
+            });
+            builder.setNegativeButton("Nein", new DialogInterface.OnClickListener(){
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    dialog.cancel();
+                }
+            });
+            AlertDialog aDialog = builder.create();
+            aDialog.show();
         }
     }
 }

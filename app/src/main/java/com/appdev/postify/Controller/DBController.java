@@ -110,7 +110,6 @@ public class DBController {
         this.context = context;
 
         try {
-            //// TODO: 16.04.2016 Build URL with DeviceID
             String android_id = Settings.Secure.getString(context.getContentResolver(),
                     Settings.Secure.ANDROID_ID);
             //Toast.makeText(context, android_id, Toast.LENGTH_LONG).show();
