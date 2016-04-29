@@ -1,1 +1,1 @@
-include ':app', ':af-push-manager-release'
+include ':af-push-manager-release', ':app'
