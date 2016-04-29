@@ -21,6 +21,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
 
@@ -66,9 +67,9 @@ public class DBController {
             days++;
         }
 
-        Calendar compareTime = new GregorianCalendar();
+        Calendar compareTime = new GregorianCalendar(); //Aktuelle Zeit
         compareTime.add(Calendar.DAY_OF_MONTH, days);
-        compareTime.set(Calendar.HOUR, 0);
+        compareTime.set(Calendar.HOUR_OF_DAY, 0);
         compareTime.set(Calendar.MINUTE, 0);
         compareTime.set(Calendar.SECOND, 0);
         compareTime.set(Calendar.MILLISECOND, 0);
@@ -92,7 +93,8 @@ public class DBController {
                     Double weight = dbEntries.getDouble(dbEntries.getColumnIndex(WEIGHT_FIELD_NAME));
                     entries.add(new Entry(timeAsInt, weight));
                 }else {
-                    if (time.compareTo(compareTime) > 0){
+                    //if (time.compareTo(compareTime) > 0){
+                    if(time.getTime().after(compareTime.getTime())){
                         entries.add(new Entry(time, dbEntries.getDouble(dbEntries.getColumnIndex(WEIGHT_FIELD_NAME))));
                     }
                 }

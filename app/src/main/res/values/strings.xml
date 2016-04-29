@@ -11,6 +11,9 @@
     <string name="msg_fill_fields">Bitte zuerst die Felder ausfüllen</string>
     <string name="msg_config_saved">Einrichungsdaten wurden gespeichert</string>
 
+    <!--Statistics Activity-->
+    <string name="stats_caption">Statistiken</string>
+
     <!--Main Activity-->
     <string name="complete_txt">Gesamt</string>
     <string name="day_txt">Heute</string>
