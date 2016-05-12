@@ -1,13 +1,17 @@
 package com.appdev.postify.activities;
 
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
+import android.net.wifi.WifiManager;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.InputType;
 import android.text.method.HideReturnsTransformationMethod;
 import android.text.method.PasswordTransformationMethod;
+import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -17,12 +21,15 @@ import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.appdev.postify.BaseApplication;
 import com.appdev.postify.Manager.WifiManagement;
 import com.appdev.postify.R;
 import com.appdev.postify.datastorage.PreferencesManagement;
 
+import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.net.UnknownHostException;
@@ -94,24 +101,15 @@ public class ConfigActivity extends AppCompatActivity {
         @Override
         public void onClick(View v) {
             if (!networkKeyEditText.getText().toString().isEmpty() && !ssidEditText.getText().toString().isEmpty()) {
-                //ssid and key are filled:
-
-                /*
-                if(SDCardManager.trySaveFile("Testdatei2.txt", "Testinhalt")){
-                    Toast.makeText(ConfigActivity.this, "Datei erzeugt", Toast.LENGTH_LONG).show();
-                }else {
-                    Toast.makeText(ConfigActivity.this, "Datei nicht erzeugt", Toast.LENGTH_LONG).show();
-                }
-                */
-
-                // TODO: 28.04.2016 Prüfe SD Karte
-                // TODO: 28.04.2016 Schreibe auf SD Karte
-
+                // Get Device iD
+                String id = PreferencesManagement.getStringPreferences(BaseApplication.DEVICEID_KEY);
+                // Create Config Data
+                String text = ssidEditText.getText().toString()+"\n"+networkKeyEditText.getText().toString()+"\n"+id+"\n";
+                // Send Config Data
+                new SendDataTask().execute(text);
+                // Save Values for Textfields
                 PreferencesManagement.saveStringPreferences(PreferencesManagement.SSID_Key, ssidEditText.getText().toString());
                 PreferencesManagement.saveStringPreferences(PreferencesManagement.NetworkKey_Key, networkKeyEditText.getText().toString());
-                Toast.makeText(ConfigActivity.this, getResources().getString(R.string.msg_config_saved), Toast.LENGTH_SHORT).show();
-                ConfigActivity.this.finish();
-
             } else {
                 // The Fields have to be filled
                 Toast.makeText(getApplicationContext(), getResources().getString(R.string.msg_fill_fields), Toast.LENGTH_LONG).show();
@@ -139,35 +137,63 @@ public class ConfigActivity extends AppCompatActivity {
         alertDialog.show();
     }
 
-    private void writeBytes() {
-        // Provides a client-side TCP socket.
-        Socket client;
+    private class SendDataTask extends AsyncTask<String, Integer, String> {
 
-        try{
-            // Creates a new unconnected socket.
-            client = new Socket();
-            // Connects this socket to the given remote host address and port specified by the SocketAddress remoteAddr with the specified timeout
-            client.connect(new InetSocketAddress(" www.example.com", 80));
-            // Constructs a new DataOutputStream on the OutputStream out.
-            DataOutputStream DataOut = new DataOutputStream(client.getOutputStream());
-            // Writes the low order 8-bit bytes from the specified string.
-            DataOut.writeBytes(ssidEditText.getText().toString() + " " + networkKeyEditText.getText());
-            // Flushes this stream to ensure all pending data is sent out to the target stream.
-            DataOut.flush();
+        @Override
+        protected String doInBackground(String... configDataText) {
+            try{
+                // Creates a new unconnected client.
+                Socket client = new Socket();
 
-            // Test Log und Toast
-            System.out.println(ssidEditText.getText().toString() + " " + networkKeyEditText.getText());
-            Toast.makeText(getApplicationContext(), "Write Bytes", Toast.LENGTH_LONG).show();
+                // Identfify IP Address from connected Wifi Modul
+                WifiManager wifiManager = (WifiManager) getSystemService(Context.WIFI_SERVICE);
+                String stringIP = android.text.format.Formatter.formatIpAddress(wifiManager.getDhcpInfo().serverAddress);
 
-        } catch(UnknownHostException e) {
-            // if the host name could not be resolved into an IP address.
-            System.out.println("Unknown host: www.example.com");
+                // Connects this client to the given remote host address and port.
+                client.connect(new InetSocketAddress(stringIP, 8090));
+                // Returns an output stream to write data into this client.
+                DataOutputStream DataOut = new DataOutputStream(client.getOutputStream());
+                // Writes the low order 8-bit bytes from the specified string.
+                DataOut.writeBytes(configDataText[0]);
+                // Flushes this stream to ensure all pending data is sent out to the target stream.
+                DataOut.flush();
+                // Constructs a new BufferedReader, providing in with a buffer of 8192 characters.
+                // Constructs a new InputStreamReader on the InputStream in.
+                BufferedReader in = new BufferedReader(new InputStreamReader(client.getInputStream()));
 
-        } catch(IOException e) {
-            // if the socket is already connected or an error occurs while connecting.
-            // if an error occurs while writing to the target stream.
-            // if an error occurs attempting to flush this stream.
-            System.out.println("No I/O");
+                while ((in.readLine()) != null) {
+                    // Returns the next line of text available from this reader.
+                    return "success";
+                }
+
+            } catch(UnknownHostException e) {
+                Log.e("ConfigActivity",e.getMessage());
+                return e.getMessage();
+            } catch(IOException e) {
+                Log.e("ConfigActivity",e.getMessage());
+                return e.getMessage();
+            }
+
+            return null;
+        }
+
+        @Override
+        protected void onProgressUpdate(Integer... values) {
+            super.onProgressUpdate(values);
+        }
+
+        @Override
+        protected void onPostExecute(String aString) {
+            super.onPostExecute(aString);
+            if (aString == "success") {
+                Toast.makeText(getApplicationContext(), "Daten erfolgreich gesendet", Toast.LENGTH_LONG).show();
+                ConfigActivity.this.finish();
+            } else {
+                if (aString.length() > 0) {
+                    Toast.makeText(getApplicationContext(), aString, Toast.LENGTH_LONG).show();
+                }
+            }
         }
     }
+
 }

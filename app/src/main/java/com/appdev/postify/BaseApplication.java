@@ -20,6 +20,7 @@ import java.util.HashMap;
  */
 public class BaseApplication extends Application {
     public static final String BADGE_KEY = "badge";
+    public static final String DEVICEID_KEY = "deviceId";
     private static BaseApplication instance;
     private final String API_KEY = "ab1fe97c2579cb11304e4d265665398b";
     private final String SENDER_ID = "895602186875";
@@ -32,6 +33,7 @@ public class BaseApplication extends Application {
         instance = this;
         // Get a 64-bit number as a hex string (randomly generated when the user first sets up)
         deviceID = Settings.Secure.getString(getApplicationContext().getContentResolver(), Secure.ANDROID_ID);
+        PreferencesManagement.saveStringPreferences(DEVICEID_KEY, deviceID);
         // AFPushEnvironment set Live Mode
         AFPushEnvironment environment = AFPushEnvironment.LIVE;
         // Create AppFarms Push Config
