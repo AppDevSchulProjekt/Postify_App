@@ -21,7 +21,6 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
 
@@ -67,12 +66,9 @@ public class DBController {
             days++;
         }
 
-        Calendar compareTime = new GregorianCalendar(); //Aktuelle Zeit
+        Calendar compareTime = Entry.makeCaledarWithoutTime(new GregorianCalendar()); //Aktuelle Zeit
         compareTime.add(Calendar.DAY_OF_MONTH, days);
-        compareTime.set(Calendar.HOUR_OF_DAY, 0);
-        compareTime.set(Calendar.MINUTE, 0);
-        compareTime.set(Calendar.SECOND, 0);
-        compareTime.set(Calendar.MILLISECOND, 0);
+
         Log.d("DebuggDate", String.valueOf(compareTime.getTimeInMillis()));
 
         database = context.openOrCreateDatabase(LOCAL_DATABASE_NAME, Context.MODE_PRIVATE, null);

@@ -1,18 +1,13 @@
 package com.appdev.postify.model;
 
-import android.util.Log;
-
 import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
-import java.util.TimeZone;
 
 /**
  * Created by Soeren on 21.03.2016.
  */
 public class Entry {
-
     private Calendar time;
     private Double weight;
 
@@ -83,6 +78,10 @@ public class Entry {
             formattedTime = df.format(time.getTime());
         }
         return formattedTime;
+    }
+
+    public static Calendar makeCaledarWithoutTime(Calendar calendar){
+        return new GregorianCalendar(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH));
     }
 
     public void setWeight(Double weight) {

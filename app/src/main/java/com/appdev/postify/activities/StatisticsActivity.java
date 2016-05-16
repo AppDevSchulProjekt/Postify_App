@@ -1,10 +1,8 @@
 package com.appdev.postify.activities;
 
 import android.os.Bundle;
-import android.provider.Settings;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.widget.TextView;
 
 import com.appdev.postify.Controller.DBController;
 import com.appdev.postify.R;
@@ -16,10 +14,10 @@ import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
 
-
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
+import java.util.GregorianCalendar;
 import java.util.Locale;
 
 /**
@@ -44,8 +42,6 @@ public class StatisticsActivity extends AppCompatActivity{
     }
     private void setupBarChart(){
         barChart = (BarChart) findViewById(R.id.lineChart);
-        barChart.setDrawGridBackground(false); //Keine Auswirkung
-        barChart.setDrawBorders(false); //Keine Auswirkung
         barChart.setDescription(null);
 
         XAxis xAxis = barChart.getXAxis();
@@ -59,19 +55,23 @@ public class StatisticsActivity extends AppCompatActivity{
         for (int j = 0; j<captions.length;j++) {
             captions[j] = " ";
         }
-        int oldDayOfMonth = 0;
-        int i = -1;
 
-        for (Entry entry: entries) {
-            int dayOfMonth = entry.getTime().get(Calendar.DAY_OF_MONTH);
-            if(dayOfMonth != oldDayOfMonth){
-                i++;
-                captions[i] = String.valueOf(dayOfMonth) + "." + entry.getTime().getDisplayName(Calendar.MONTH, Calendar.SHORT, Locale.getDefault());
+        long days = getCountOfDays(entries);
 
-                oldDayOfMonth = dayOfMonth;
+
+        Calendar itterativeDate = Entry.makeCaledarWithoutTime(entries.get(0).getTime());
+        for (int i = 0; i < days; i++){
+            for (Entry entry:entries) {
+                if(entry.getTime().get(Calendar.DAY_OF_MONTH) == itterativeDate.get(Calendar.DAY_OF_MONTH)){
+                    werte[i]++;
+                }
             }
-            werte[i] ++;
+            captions[i] = String.valueOf(itterativeDate.get(Calendar.DAY_OF_MONTH)) + "." +
+                    itterativeDate.getDisplayName(Calendar.MONTH, Calendar.SHORT, Locale.getDefault());
+
+            itterativeDate.add(Calendar.DAY_OF_MONTH,1);
         }
+
 
         ArrayList<String> xVals = new ArrayList<>();
         ArrayList<BarEntry> barEntries = new ArrayList<>();
@@ -85,5 +85,17 @@ public class StatisticsActivity extends AppCompatActivity{
         BarData barData = new BarData(xVals, barDataSet);
         barChart.setData(barData);
         barChart.invalidate(); // refresh
+    }
+
+    private long getCountOfDays(ArrayList<Entry> entries){
+        //heutiges Datum
+        Calendar untilDate = Entry.makeCaledarWithoutTime(new GregorianCalendar());
+        untilDate.add(Calendar.DAY_OF_MONTH, 1);
+
+        //ältestes Datum
+        Calendar oldesDate = Entry.makeCaledarWithoutTime(entries.get(0).getTime());
+
+        long time = untilDate.getTime().getTime() - oldesDate.getTime().getTime();
+        return Math.round( (double)time / (24. * 60.*60.*1000.) );
     }
 }
